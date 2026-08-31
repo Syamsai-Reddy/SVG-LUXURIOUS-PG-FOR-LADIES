@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Menu, X, Phone } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { pg, waLink, defaultWaMessage } from '../data/config'
 
 const LINKS = [
@@ -107,7 +107,7 @@ export default function Navbar() {
               <X size={26} />
             </button>
           </div>
-          <nav className="flex flex-col items-start gap-1 container-px mt-6">
+          <nav className="flex flex-col items-start gap-1 container-px mt-6 pb-10">
             {LINKS.map((link) => (
               <a
                 key={link.href}
@@ -119,11 +119,6 @@ export default function Navbar() {
               </a>
             ))}
           </nav>
-          <div className="container-px mt-8 flex flex-col gap-3">
-            <a href={`tel:${pg.phoneTel}`} className="btn-outline-light w-full">
-              <Phone size={16} /> {pg.phoneDisplay}
-            </a>
-          </div>
         </div>
       )}
     </>
