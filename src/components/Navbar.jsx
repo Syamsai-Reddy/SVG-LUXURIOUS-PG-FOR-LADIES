@@ -120,14 +120,6 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="container-px mt-8 flex flex-col gap-3">
-            <a
-              href={waLink(defaultWaMessage)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary !bg-rose-dark w-full"
-            >
-              WhatsApp Us
-            </a>
             <a href={`tel:${pg.phoneTel}`} className="btn-outline-light w-full">
               <Phone size={16} /> {pg.phoneDisplay}
             </a>
