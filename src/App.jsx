@@ -20,7 +20,7 @@ import MobileActionBar from './components/MobileActionBar'
 
 export default function App() {
   return (
-    <div className="pb-16 sm:pb-0">
+    <div className="pb-16 lg:pb-0">
       <Navbar />
       <Hero />
       <Highlights />

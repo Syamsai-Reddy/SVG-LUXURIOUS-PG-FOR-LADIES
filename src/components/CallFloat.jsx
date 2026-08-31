@@ -11,7 +11,7 @@ export default function CallFloat() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.85, duration: 0.4 }}
       whileHover={{ scale: 1.06 }}
-      className="fixed bottom-44 sm:bottom-24 right-5 sm:right-7 z-40 flex items-center justify-center h-14 w-14 rounded-full bg-charcoal border border-gold/40 shadow-soft"
+      className="hidden lg:flex fixed bottom-24 right-7 z-40 items-center justify-center h-14 w-14 rounded-full bg-charcoal border border-gold/40 shadow-soft"
     >
       <Phone className="text-gold" size={22} strokeWidth={1.75} fill="currentColor" fillOpacity={0.08} />
     </motion.a>

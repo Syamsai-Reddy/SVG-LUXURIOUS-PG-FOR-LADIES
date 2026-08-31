@@ -3,7 +3,7 @@ import { pg, waLink, defaultWaMessage } from '../data/config'
 
 export default function MobileActionBar() {
   return (
-    <div className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-ivory/95 backdrop-blur-md border-t border-charcoal/10 shadow-soft">
+    <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-ivory/95 backdrop-blur-md border-t border-charcoal/10 shadow-soft">
       <div className="grid grid-cols-3">
         <a
           href={waLink(defaultWaMessage)}
