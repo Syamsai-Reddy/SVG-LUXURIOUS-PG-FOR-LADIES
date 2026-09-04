@@ -230,10 +230,10 @@ export const testimonials = [
 ]
 
 export const nearby = [
-  { category: 'Colleges', items: ['PES College (adjacent to the property)'] },
-  { category: 'Offices', items: ['[NEARBY OFFICES — TO BE CONFIRMED]'] },
-  { category: 'Transport', items: ['[NEARBY METRO / BUS STOPS — TO BE CONFIRMED]'] },
-  { category: 'Everyday Essentials', items: ['[NEARBY RESTAURANTS / SHOPPING / HOSPITALS — TO BE CONFIRMED]'] },
+  { category: 'Colleges', items: ['PES College (adjacent to the property)', 'National College'] },
+  { category: 'Offices', items: ['Giri Nagar'] },
+  { category: 'Transport', items: ['Sri Nagar Bus Stop'] },
+  { category: 'Everyday Essentials', items: ['Karewell Hospital'] },
 ]
 
 export const faqs = [
