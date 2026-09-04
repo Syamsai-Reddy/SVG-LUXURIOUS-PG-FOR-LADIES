@@ -36,22 +36,25 @@ function validate(form) {
 
 function formatDate(iso) {
   if (!iso) return 'N/A'
-  return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+  const [year, month, day] = iso.split('-')
+  return `${day}/${month}/${year}`
 }
 
 function buildMessage(form) {
-  return `*New Enquiry — ${pg.name}*
-
-Name: ${form.name.trim()}
-Mobile Number: ${form.phone.trim()}
-Email: ${form.email.trim()}
-Looking For: ${form.roomType}
-Preferred Move-in Date: ${formatDate(form.moveIn)}
-Number of People: ${form.numPeople}
-Stay Duration: ${form.stayDuration}
-Message (optional): ${form.message.trim() || 'N/A'}
-
-(Mobile number verified via OTP)`
+  const lines = [
+    '🔔 New Enquiry',
+    '',
+    `Name: ${form.name.trim()}`,
+    `Mobile Number: ${form.phone.trim()}`,
+    `Email: ${form.email.trim()}`,
+    `Looking For: ${form.roomType}`,
+    `Preferred Move-in Date: ${formatDate(form.moveIn)}`,
+    `Number of People: ${form.numPeople}`,
+    `Stay Duration: ${form.stayDuration}`,
+  ]
+  const message = form.message.trim()
+  if (message) lines.push(`Message: ${message}`)
+  return lines.join('\n')
 }
 
 function generateOtp() {
