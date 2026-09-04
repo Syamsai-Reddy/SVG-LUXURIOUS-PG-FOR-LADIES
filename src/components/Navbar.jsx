@@ -94,11 +94,9 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Rendered as a sibling of <header>, not a descendant — header gets
-          backdrop-blur once scrolled, and backdrop-filter/transform on an
-          ancestor changes what position:fixed resolves against for its
-          children, which was collapsing this overlay into the header's
-          own (thin) box instead of the full viewport. */}
+      {/* sibling of <header>, not nested inside it — header's backdrop-blur
+          (once scrolled) would otherwise become the containing block for
+          this fixed overlay and squash it into the header's own height */}
       {open && (
         <div className="fixed inset-0 z-50 bg-charcoal text-ivory lg:hidden">
           <div className="flex items-center justify-between container-px py-5">

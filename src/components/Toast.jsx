@@ -2,8 +2,7 @@ import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CheckCircle2, AlertCircle, X } from 'lucide-react'
 
-// A single top-of-page notification. `toast` is either null (hidden) or
-// { type: 'success' | 'error', message: string }. Auto-dismisses after 5s.
+// toast: null | { type: 'success' | 'error', message }, auto-dismisses after 5s
 export default function Toast({ toast, onClose }) {
   useEffect(() => {
     if (!toast) return

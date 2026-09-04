@@ -12,7 +12,7 @@ export default function Location() {
         </Reveal>
 
         <div className="grid lg:grid-cols-5 gap-8">
-          <Reveal className="lg:col-span-3 rounded-2xl overflow-hidden shadow-card h-[360px] md:h-[460px]">
+          <Reveal className="lg:col-span-3 lg:self-center rounded-2xl overflow-hidden shadow-card h-[360px] md:h-[460px]">
             <iframe
               title="SVG Luxurious PG for Ladies location map"
               src={pg.mapsEmbedSrc}

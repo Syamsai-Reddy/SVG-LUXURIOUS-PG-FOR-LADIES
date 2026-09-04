@@ -57,14 +57,12 @@ body {
   @apply inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/40 text-white px-6 py-3.5 rounded-full text-sm tracking-wide font-medium transition-all duration-300 hover:bg-white hover:text-charcoal hover:-translate-y-0.5;
 }
 
-/* Premium surface used for feature/amenity/room cards — a warm white with a
-   hairline gold-tinted border and a lift on hover, instead of flat fills. */
+/* card style for feature/amenity/room grids — hairline border + hover lift */
 .card-premium {
   @apply relative bg-white rounded-2xl border border-champagne/25 shadow-card transition-all duration-500 hover:shadow-card-hover hover:-translate-y-1;
 }
 
-/* Faint warm radial glow used behind section headings on light backgrounds
-   so flat cream/ivory fills read as a considered surface, not empty space. */
+/* subtle warmth behind section headings so light sections don't look flat */
 .bg-glow {
   background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(203, 162, 95, 0.09), transparent 70%);
 }
@@ -73,8 +71,7 @@ body {
   @apply h-px w-16 bg-gradient-to-r from-gold via-gold/60 to-transparent;
 }
 
-/* Hides the scrollbar on horizontal drag-scrollers (Gallery, Testimonials)
-   in WebKit browsers; Firefox is handled inline via scrollbarWidth. */
+/* hide scrollbar on drag-scrollers (Gallery, Testimonials); Firefox handled inline */
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }

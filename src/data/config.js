@@ -1,11 +1,5 @@
-// ---------------------------------------------------------------------------
-// SVG Luxurious PG for Ladies — central content configuration
-//
-// This file is the single source of truth for the site's content. Update the
-// values here (phone numbers, pricing, rooms, amenities, etc.) without
-// touching any component/UI code. Anything wrapped in [BRACKETS] is a
-// placeholder — replace it with the real value before launch.
-// ---------------------------------------------------------------------------
+// All site content lives here so it can be updated without touching components.
+// [BRACKETED] values are placeholders still waiting on real info.
 
 export const pg = {
   name: 'SVG Luxurious PG for Ladies',
@@ -32,7 +26,7 @@ export const pg = {
     encodeURIComponent(
       'SVG Luxurious PG for Ladies, Near PES College, 50 Feet Main Road, 4th Main Rd, Nagendra Block, Banashankari, Bengaluru, Karnataka 560050'
     ) +
-    '&output=embed',
+    '&z=16&output=embed',
   mapsDirectionsUrl:
     'https://www.google.com/maps/dir/?api=1&destination=' +
     encodeURIComponent(
@@ -61,8 +55,7 @@ export function waLink(message) {
   return `https://wa.me/${number}?text=${text}`
 }
 
-// The single generic WhatsApp message used by every "chat with us" entry
-// point on the site (navbar, hero, floating button, mobile bar, contact card).
+// shared across every "chat with us" entry point (navbar, hero, floats, contact card)
 export const defaultWaMessage = `Hi, I am interested in staying at ${pg.name}. I would like to know about room availability and pricing.`
 
 export const stayDurations = ['1-3 months', '3-6 months', '6-12 months', '1 year or more']
@@ -77,8 +70,7 @@ export const highlights = [
   { label: 'Responsive Owner' },
 ]
 
-// Only amenities corroborated by resident reviews are listed as confirmed.
-// Add more once you confirm them — do not invent unconfirmed amenities.
+// only amenities confirmed by resident reviews — don't add unconfirmed ones
 export const amenities = [
   { name: 'Home-Cooked Food', description: 'Wholesome daily meals, residents especially love the breakfast.' },
   { name: 'High-Speed Wi-Fi', description: 'Available around the clock across the residence.' },
@@ -165,7 +157,7 @@ export const galleryImages = [
   { src: '/images/room-5.webp', category: 'Rooms', alt: 'Single room with curtained windows' },
 ]
 
-// Real resident reviews, as provided via Google Reviews. Do not alter meaning.
+// real Google reviews — don't reword these
 export const testimonials = [
   {
     name: 'Jessica James',
@@ -230,10 +222,11 @@ export const testimonials = [
 ]
 
 export const nearby = [
-  { category: 'Colleges', items: ['PES College (adjacent to the property)', 'National College'] },
-  { category: 'Offices', items: ['Giri Nagar'] },
-  { category: 'Transport', items: ['Sri Nagar Bus Stop'] },
-  { category: 'Everyday Essentials', items: ['Karewell Hospital'] },
+  { category: 'Near Colleges', items: ['PES College'] },
+  { category: 'Near Offices', items: ['Giri Nagar Offices'] },
+  { category: 'Near Bustop', items: ['Sri Nagar Bus Stop'] },
+  { category: 'Near Hospitals', items: ['Karewell Hospital'] },
+  { category: 'Near Metro Station', items: ['National College Metro Station'] },
 ]
 
 export const faqs = [
