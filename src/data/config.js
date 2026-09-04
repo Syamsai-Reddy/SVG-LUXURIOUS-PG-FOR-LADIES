@@ -115,18 +115,18 @@ export const rooms = [
     deposit: '[DEPOSIT INFORMATION ON REQUEST]',
   },
   {
-    id: 'single-occupancy',
-    type: 'Single Occupancy Room',
-    image: '/images/room-4.webp',
-    gallery: ['/images/room-4.webp', '/images/room-5.webp'],
-    occupancy: '1 resident',
-    bedType: 'Single bed',
-    furniture: 'Wardrobe, study table and curtained window',
+    id: 'six-sharing',
+    type: '6 Sharing Room',
+    image: '/images/room-3.webp',
+    gallery: ['/images/room-3.webp'],
+    occupancy: '6 residents',
+    bedType: 'Six single beds',
+    furniture: 'Individual wardrobe and study table for each resident',
     priceLabel: '[PRICE ON REQUEST]',
     availability: '[AVAILABILITY ON REQUEST]',
     description:
-      'A private, quiet room for residents who prefer their own space, furnished with a single bed, wardrobe and dedicated study table.',
-    included: ['Furnished bed & wardrobe', 'Daily housekeeping', 'Wi-Fi', 'Hot water'],
+      'A spacious multi-sharing room for residents who enjoy company and a lively, community atmosphere, furnished with six single beds and dedicated wardrobe and study space for each resident.',
+    included: ['Furnished beds & wardrobes', 'Daily housekeeping', 'Wi-Fi', 'Hot water'],
     notIncluded: ['[NOT INCLUDED — TO BE CONFIRMED]'],
     deposit: '[DEPOSIT INFORMATION ON REQUEST]',
   },
@@ -232,7 +232,7 @@ export const nearby = [
 export const faqs = [
   {
     q: 'What room types are available?',
-    a: 'SVG Luxurious PG for Ladies offers twin sharing, single occupancy and triple sharing rooms. See the Rooms section for details on each.',
+    a: 'SVG Luxurious PG for Ladies offers twin sharing, triple sharing and 6 sharing rooms. See the Rooms section for details on each.',
   },
   {
     q: 'Is food included?',
