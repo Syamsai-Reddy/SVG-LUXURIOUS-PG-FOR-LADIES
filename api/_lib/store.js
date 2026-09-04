@@ -37,3 +37,8 @@ export async function listEnquiries(kvClient = defaultKv) {
 
   return entries.filter(Boolean)
 }
+
+export async function deleteEnquiry(id, kvClient = defaultKv) {
+  await kvClient.del(`enquiry:${id}`)
+  await kvClient.zrem(INDEX_KEY, id)
+}

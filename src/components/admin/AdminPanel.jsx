@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { LogOut, RefreshCw, Inbox, AlertCircle } from 'lucide-react'
 import EnquiryCard from './EnquiryCard'
 
-export default function AdminPanel({ enquiries, loadError, onRefresh, onLogout }) {
+export default function AdminPanel({ enquiries, loadError, onRefresh, onLogout, onDelete }) {
   const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function AdminPanel({ enquiries, loadError, onRefresh, onLogout }
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <AnimatePresence>
               {enquiries.map((enquiry, i) => (
-                <EnquiryCard key={enquiry.id} enquiry={enquiry} index={i} />
+                <EnquiryCard key={enquiry.id} enquiry={enquiry} index={i} onDelete={onDelete} />
               ))}
             </AnimatePresence>
           </div>

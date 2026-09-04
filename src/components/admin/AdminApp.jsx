@@ -44,6 +44,20 @@ export default function AdminApp() {
     setStatus('loggedOut')
   }
 
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/admin/enquiries?id=${encodeURIComponent(id)}`, { method: 'DELETE' })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.ok) {
+        setEnquiries((prev) => prev.filter((e) => e.id !== id))
+        return true
+      }
+      return false
+    } catch {
+      return false
+    }
+  }
+
   if (status === 'checking') {
     return (
       <div className="min-h-screen bg-charcoal flex items-center justify-center">
@@ -62,6 +76,7 @@ export default function AdminApp() {
       loadError={loadError}
       onRefresh={loadEnquiries}
       onLogout={handleLogout}
+      onDelete={handleDelete}
     />
   )
 }
