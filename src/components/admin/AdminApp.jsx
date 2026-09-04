@@ -10,22 +10,39 @@ export default function AdminApp() {
   const loadEnquiries = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/enquiries')
+
       if (res.status === 401) {
         setStatus('loggedOut')
         return
       }
-      const data = await res.json().catch(() => ({}))
-      if (res.ok && data.ok) {
+
+      // A real answer from our API is always JSON. Anything else (e.g. an
+      // HTML page, which is what you get if this is running somewhere the
+      // /api backend isn't actually available) means we have no real
+      // confirmation of being logged in — default to requiring login again
+      // rather than assuming access.
+      const isJson = (res.headers.get('content-type') || '').includes('application/json')
+      if (!isJson) {
+        setStatus('loggedOut')
+        return
+      }
+
+      const data = await res.json().catch(() => null)
+      if (res.ok && data?.ok) {
         setEnquiries(data.enquiries || [])
         setLoadError('')
         setStatus('loggedIn')
-      } else {
+      } else if (data) {
+        // Authenticated (past the 401 check above) but the data itself
+        // failed to load — show the dashboard with the error banner rather
+        // than bouncing back to login.
         setLoadError(data.error || 'Could not load enquiries.')
         setStatus('loggedIn')
+      } else {
+        setStatus('loggedOut')
       }
     } catch {
-      setLoadError('Could not reach the server.')
-      setStatus('loggedIn')
+      setStatus('loggedOut')
     }
   }, [])
 

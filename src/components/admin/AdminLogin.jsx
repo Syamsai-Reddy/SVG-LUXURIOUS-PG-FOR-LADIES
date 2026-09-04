@@ -18,6 +18,16 @@ export default function AdminLogin({ onLoggedIn }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
+
+      const isJson = (res.headers.get('content-type') || '').includes('application/json')
+      if (!isJson) {
+        // No real API answered (e.g. this is running somewhere the /api
+        // backend isn't available) — say so plainly instead of implying
+        // the password was wrong.
+        setError('Could not reach the admin server. This only works on the deployed site with the backend configured.')
+        return
+      }
+
       const data = await res.json().catch(() => ({}))
       if (res.ok && data.ok) {
         onLoggedIn()
