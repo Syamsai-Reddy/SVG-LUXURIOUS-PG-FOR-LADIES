@@ -1,6 +1,5 @@
-// Shared between the enquiry form (client-side UX validation) and the
-// /api/enquiry serverless function (authoritative server-side validation).
-// No React/DOM here so both sides can use it.
+// Enquiry form validation + WhatsApp message formatting. Plain JS, no
+// React/DOM, so it's easy to unit-test on its own.
 
 export const NAME_RE = /^[A-Za-z][A-Za-z\s.'-]{1,49}$/
 export const PHONE_RE = /^[6-9]\d{9}$/
@@ -32,4 +31,21 @@ export function formatMoveInDate(iso) {
   if (!iso) return 'N/A'
   const [year, month, day] = iso.split('-')
   return `${day}/${month}/${year}`
+}
+
+export function buildEnquiryMessage(form) {
+  const lines = [
+    '🔔 New Enquiry',
+    '',
+    `Name: ${(form.name || '').trim()}`,
+    `Mobile Number: ${(form.phone || '').trim()}`,
+    `Email: ${(form.email || '').trim()}`,
+    `Looking For: ${form.roomType}`,
+    `Preferred Move-in Date: ${formatMoveInDate(form.moveIn)}`,
+    `Number of People: ${form.numPeople}`,
+    `Stay Duration: ${form.stayDuration}`,
+  ]
+  const message = (form.message || '').trim()
+  if (message) lines.push(`Message: ${message}`)
+  return lines.join('\n')
 }

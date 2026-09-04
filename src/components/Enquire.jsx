@@ -3,7 +3,7 @@ import { Phone, Send, RotateCcw } from 'lucide-react'
 import Reveal from './Reveal'
 import Toast from './Toast'
 import { pg, waLink, defaultWaMessage, rooms, stayDurations } from '../data/config'
-import { validateEnquiry } from '../utils/enquiry'
+import { validateEnquiry, buildEnquiryMessage } from '../utils/enquiry'
 
 const INITIAL_FORM = {
   name: '',
@@ -20,12 +20,11 @@ export default function Enquire() {
   const [step, setStep] = useState('form') // 'form' | 'done'
   const [form, setForm] = useState(INITIAL_FORM)
   const [errors, setErrors] = useState({})
-  const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState(null)
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     const fieldErrors = validateEnquiry(form)
     setErrors(fieldErrors)
@@ -34,32 +33,9 @@ export default function Enquire() {
       return
     }
 
-    setSubmitting(true)
-    try {
-      const res = await fetch('/api/enquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      const data = await res.json().catch(() => ({}))
-
-      if (res.ok && data.ok) {
-        setStep('done')
-        setToast({ type: 'success', message: 'We have received your details — we may contact you shortly.' })
-      } else {
-        setToast({
-          type: 'error',
-          message: data.error || 'We could not send your enquiry right now. Please WhatsApp or call us directly.',
-        })
-      }
-    } catch {
-      setToast({
-        type: 'error',
-        message: 'We could not reach the server. Please WhatsApp or call us directly.',
-      })
-    } finally {
-      setSubmitting(false)
-    }
+    window.open(waLink(buildEnquiryMessage(form)), '_blank', 'noopener,noreferrer')
+    setStep('done')
+    setToast({ type: 'success', message: 'WhatsApp has been opened with your enquiry — please tap Send to complete it.' })
   }
 
   const startOver = () => {
@@ -99,9 +75,11 @@ export default function Enquire() {
             <div className="card-premium p-7 md:p-9">
               {step === 'done' ? (
                 <div className="text-center py-10">
-                  <h3 className="font-serif text-2xl mb-3">Thank You</h3>
+                  <h3 className="font-serif text-2xl mb-3">Almost There</h3>
                   <p className="text-charcoal/65 font-light mb-6">
-                    We have received your enquiry and will get back to you shortly.
+                    WhatsApp has opened in a new tab with your enquiry filled in — just tap
+                    Send there to complete it. If it didn&rsquo;t open, use the WhatsApp Us
+                    button above.
                   </p>
                   <button onClick={startOver} className="btn-secondary !py-2.5 mx-auto">
                     <RotateCcw size={15} /> Submit Another Enquiry
@@ -205,8 +183,8 @@ export default function Enquire() {
                     className={`${inputClass(false)} resize-none`}
                   />
 
-                  <button type="submit" disabled={submitting} className="btn-primary !bg-rose-dark w-full disabled:opacity-60">
-                    <Send size={16} /> {submitting ? 'Sending…' : 'Send Enquiry'}
+                  <button type="submit" className="btn-primary !bg-rose-dark w-full">
+                    <Send size={16} /> Send Enquiry
                   </button>
                 </form>
               )}
