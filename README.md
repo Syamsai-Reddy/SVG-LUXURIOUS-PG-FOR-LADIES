@@ -10,17 +10,15 @@ Built with React + Vite + Tailwind CSS, with a central content config, WhatsApp/
 - Tailwind CSS
 - Framer Motion (animations)
 - lucide-react (icons)
-- Vercel serverless functions (`/api`) + Vercel KV for storage
+- Vercel serverless functions (`/api`) + Redis (Vercel KV or Upstash) for storage
 
 ## Enquiry form → Admin panel
 
 The enquiry form (`src/components/Enquire.jsx`) posts validated submissions to `/api/enquiry`
-(`api/enquiry.js`), which stores them in Vercel KV for the admin dashboard at `/admin` — no
+(`api/enquiry.js`), which stores them in Redis for the admin dashboard at `/admin` — no
 WhatsApp message is sent automatically. The owner reviews and (optionally) contacts enquirers
 directly from the panel; the site's separate "WhatsApp Us" / "Call Now" buttons elsewhere are
 unrelated quick-contact links and still work as before.
-
-See `api/README` notes below for what the admin panel itself requires.
 
 ### Admin panel (`/admin`)
 
@@ -31,12 +29,12 @@ to the repo**:
 
 | Variable | Where to get it |
 |---|---|
-| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | Auto-added when you connect a Vercel KV database to this project (Vercel → Storage → Create Database → KV) |
+| `KV_REST_API_URL` + `KV_REST_API_TOKEN` **or** `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` | Auto-added when you connect a Redis database to this project (Vercel → Storage → connect a KV/Redis database). Vercel has used both naming conventions at different times — `api/_lib/kv.js` accepts either, so whichever one your dashboard creates just works. |
 | `ADMIN_EMAIL` | The admin login email |
 | `ADMIN_PASSWORD_HASH` | A scrypt hash (`salt:hash`) — never store the plaintext password anywhere |
 | `ADMIN_SESSION_SECRET` | A random secret used to sign session cookies |
 
-Until the KV database is connected, `/api/enquiry` and `/admin` return a clear storage error
+Until a Redis database is connected, `/api/enquiry` and `/admin` return a clear storage error
 instead of silently failing or faking success.
 
 ## Getting Started
