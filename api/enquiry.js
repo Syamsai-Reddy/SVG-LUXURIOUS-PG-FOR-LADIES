@@ -11,6 +11,7 @@
 //   WHATSAPP_API_VERSION      Graph API version, defaults to v21.0
 
 import { validateEnquiry, buildEnquiryMessage } from '../src/utils/enquiry.js'
+import { saveEnquiry } from './_lib/store.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,6 +23,16 @@ export default async function handler(req, res) {
   const errors = validateEnquiry(form)
   if (Object.keys(errors).length > 0) {
     return res.status(400).json({ ok: false, error: 'Invalid enquiry details', fieldErrors: errors })
+  }
+
+  // Store for the admin panel regardless of whether the WhatsApp ping below
+  // succeeds — the panel is the durable record, WhatsApp is a best-effort
+  // instant notification on top of it. A storage hiccup here shouldn't
+  // change the response the customer already gets from the WhatsApp step.
+  try {
+    await saveEnquiry(form)
+  } catch (err) {
+    console.error('Failed to save enquiry for the admin panel:', err)
   }
 
   const { WHATSAPP_ACCESS_TOKEN, WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_OWNER_NUMBER } = process.env
