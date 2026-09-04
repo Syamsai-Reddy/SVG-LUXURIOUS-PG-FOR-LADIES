@@ -1,12 +1,9 @@
 import { useState } from 'react'
-import { Phone, Send, ShieldCheck, ArrowLeft, RotateCcw } from 'lucide-react'
+import { Phone, Send, RotateCcw } from 'lucide-react'
 import Reveal from './Reveal'
 import Toast from './Toast'
 import { pg, waLink, defaultWaMessage, rooms, stayDurations } from '../data/config'
-
-const NAME_RE = /^[A-Za-z][A-Za-z\s.'-]{1,49}$/
-const PHONE_RE = /^[6-9]\d{9}$/
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/
+import { validateEnquiry } from '../utils/enquiry'
 
 const INITIAL_FORM = {
   name: '',
@@ -19,96 +16,55 @@ const INITIAL_FORM = {
   message: '',
 }
 
-function validate(form) {
-  const errors = {}
-  if (!NAME_RE.test(form.name.trim())) errors.name = 'Enter your full name'
-  if (!PHONE_RE.test(form.phone.trim())) errors.phone = 'Enter a valid 10-digit mobile number'
-  if (!EMAIL_RE.test(form.email.trim())) errors.email = 'Enter a valid email address'
-  if (!form.moveIn) errors.moveIn = 'Select a move-in date'
-  else if (new Date(form.moveIn) < new Date(new Date().toDateString())) {
-    errors.moveIn = 'Move-in date cannot be in the past'
-  }
-  if (!form.numPeople || Number(form.numPeople) < 1 || Number(form.numPeople) > 10) {
-    errors.numPeople = 'Enter a number between 1 and 10'
-  }
-  return errors
-}
-
-function formatDate(iso) {
-  if (!iso) return 'N/A'
-  const [year, month, day] = iso.split('-')
-  return `${day}/${month}/${year}`
-}
-
-function buildMessage(form) {
-  const lines = [
-    '🔔 New Enquiry',
-    '',
-    `Name: ${form.name.trim()}`,
-    `Mobile Number: ${form.phone.trim()}`,
-    `Email: ${form.email.trim()}`,
-    `Looking For: ${form.roomType}`,
-    `Preferred Move-in Date: ${formatDate(form.moveIn)}`,
-    `Number of People: ${form.numPeople}`,
-    `Stay Duration: ${form.stayDuration}`,
-  ]
-  const message = form.message.trim()
-  if (message) lines.push(`Message: ${message}`)
-  return lines.join('\n')
-}
-
-function generateOtp() {
-  return String(Math.floor(100000 + Math.random() * 900000))
-}
-
 export default function Enquire() {
-  const [step, setStep] = useState('form') // 'form' | 'otp' | 'done'
+  const [step, setStep] = useState('form') // 'form' | 'done'
   const [form, setForm] = useState(INITIAL_FORM)
   const [errors, setErrors] = useState({})
-  const [otp, setOtp] = useState('')
-  const [otpInput, setOtpInput] = useState('')
-  const [otpError, setOtpError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const [toast, setToast] = useState(null)
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
-  const handleSendOtp = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    const fieldErrors = validate(form)
+    const fieldErrors = validateEnquiry(form)
     setErrors(fieldErrors)
     if (Object.keys(fieldErrors).length > 0) {
       setToast({ type: 'error', message: 'Please enter your original, valid details to continue.' })
       return
     }
-    setOtp(generateOtp())
-    setOtpInput('')
-    setOtpError('')
-    setStep('otp')
-  }
 
-  const handleResendOtp = () => {
-    setOtp(generateOtp())
-    setOtpInput('')
-    setOtpError('')
-  }
+    setSubmitting(true)
+    try {
+      const res = await fetch('/api/enquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      const data = await res.json().catch(() => ({}))
 
-  const handleVerifyAndSubmit = (e) => {
-    e.preventDefault()
-    if (otpInput.trim() !== otp) {
-      setOtpError('Incorrect code. Please check and try again.')
-      return
+      if (res.ok && data.ok) {
+        setStep('done')
+        setToast({ type: 'success', message: 'We have received your details — we may contact you shortly.' })
+      } else {
+        setToast({
+          type: 'error',
+          message: data.error || 'We could not send your enquiry right now. Please WhatsApp or call us directly.',
+        })
+      }
+    } catch {
+      setToast({
+        type: 'error',
+        message: 'We could not reach the server. Please WhatsApp or call us directly.',
+      })
+    } finally {
+      setSubmitting(false)
     }
-    window.open(waLink(buildMessage(form)), '_blank', 'noopener,noreferrer')
-    setStep('done')
-    setToast({ type: 'success', message: 'We have received your details — we may contact you shortly.' })
   }
 
   const startOver = () => {
     setForm(INITIAL_FORM)
     setErrors({})
-    setOtp('')
-    setOtpInput('')
-    setOtpError('')
     setStep('form')
   }
 
@@ -127,8 +83,7 @@ export default function Enquire() {
             <h2 className="section-heading mb-6">Find Your New Home</h2>
             <p className="text-charcoal/65 font-light leading-relaxed mb-10 max-w-md">
               Schedule a visit or speak with us about availability — we typically respond right
-              away. Enquiries submitted here are verified with a one-time code before they reach
-              the owner, to keep things spam-free.
+              away.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mb-10">
               <a href={waLink(defaultWaMessage)} target="_blank" rel="noopener noreferrer" className="btn-primary !bg-rose-dark">
@@ -146,72 +101,14 @@ export default function Enquire() {
                 <div className="text-center py-10">
                   <h3 className="font-serif text-2xl mb-3">Thank You</h3>
                   <p className="text-charcoal/65 font-light mb-6">
-                    Your verified enquiry has been opened in WhatsApp — send the message and the
-                    owner will get back to you shortly.
+                    We have received your enquiry and will get back to you shortly.
                   </p>
                   <button onClick={startOver} className="btn-secondary !py-2.5 mx-auto">
                     <RotateCcw size={15} /> Submit Another Enquiry
                   </button>
                 </div>
-              ) : step === 'otp' ? (
-                <form onSubmit={handleVerifyAndSubmit} className="space-y-5">
-                  <div className="flex items-center gap-3 mb-1">
-                    <div className="h-11 w-11 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
-                      <ShieldCheck className="text-gold" size={20} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                      <h3 className="font-serif text-xl">Verify Your Number</h3>
-                      <p className="text-xs text-charcoal/55">
-                        Enter the 6-digit code sent to {form.phone}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-dashed border-gold/50 bg-gold/5 px-4 py-3 text-xs text-charcoal/70 leading-relaxed">
-                    <strong className="text-charcoal">Demo mode:</strong> this project has no SMS
-                    backend wired up yet, so your code is shown here instead of being texted —
-                    your verification code is{' '}
-                    <span className="font-semibold text-gold tracking-widest">{otp}</span>. Connect
-                    a real SMS/email OTP provider before launch.
-                  </div>
-
-                  <input
-                    autoFocus
-                    inputMode="numeric"
-                    maxLength={6}
-                    placeholder="Enter 6-digit code"
-                    value={otpInput}
-                    onChange={(e) => {
-                      setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 6))
-                      setOtpError('')
-                    }}
-                    className={`${inputClass(!!otpError)} text-center tracking-[0.5em] text-lg font-medium`}
-                  />
-                  {otpError && <p className="text-xs text-rose-dark -mt-3">{otpError}</p>}
-
-                  <button type="submit" disabled={otpInput.length !== 6} className="btn-primary !bg-rose-dark w-full disabled:opacity-40">
-                    <ShieldCheck size={16} /> Verify &amp; Send Enquiry
-                  </button>
-
-                  <div className="flex items-center justify-between text-xs pt-1">
-                    <button
-                      type="button"
-                      onClick={() => setStep('form')}
-                      className="inline-flex items-center gap-1.5 text-charcoal/60 hover:text-charcoal transition-colors"
-                    >
-                      <ArrowLeft size={13} /> Edit details
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleResendOtp}
-                      className="text-rose-dark hover:text-rose-dark/70 transition-colors"
-                    >
-                      Resend code
-                    </button>
-                  </div>
-                </form>
               ) : (
-                <form onSubmit={handleSendOtp} className="space-y-4" noValidate>
+                <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <input
@@ -308,8 +205,8 @@ export default function Enquire() {
                     className={`${inputClass(false)} resize-none`}
                   />
 
-                  <button type="submit" className="btn-primary !bg-rose-dark w-full">
-                    <Send size={16} /> Send Enquiry
+                  <button type="submit" disabled={submitting} className="btn-primary !bg-rose-dark w-full disabled:opacity-60">
+                    <Send size={16} /> {submitting ? 'Sending…' : 'Send Enquiry'}
                   </button>
                 </form>
               )}
